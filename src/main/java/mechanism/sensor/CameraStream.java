@@ -62,4 +62,12 @@ public class CameraStream {
     	}
     	return mat;
     }
+
+    public int getWidth(){
+        return IMG_WIDTH;
+    }
+
+    public Object getImgLock(){
+        return imgLock;
+    }
 }
