@@ -25,7 +25,7 @@ import org.opencv.objdetect.*;
 *
 * @author GRIP
 */
-public class GripPipeline implements VisionPipeline {
+public class CargoPipeline implements VisionPipeline {
 
 	//Outputs
 	private Mat resizeImageOutput = new Mat();
