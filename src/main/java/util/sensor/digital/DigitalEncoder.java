@@ -32,7 +32,7 @@ public class DigitalEncoder extends Encoder{
 	}
 	
 	public double getRate() {
-		return getRate()/rotationsPerInch;
+		return super.getRate()/rotationsPerInch;
 	}
-	
+
 }

@@ -31,9 +31,9 @@ public class VisionProcessing {
 			final RetroreflectorPipeline rPipeline = new RetroreflectorPipeline();
 			Mat mat;
 	    	while(!Thread.interrupted()) {
-				if(j.getRawButton(1))
+				if(j.getRawButton(7))
 					processingCargo = false;
-				if(j.getRawButton((2)))
+				if(j.getRawButton((8)))
 					processingCargo = true;
 				mat = stream.getMat();
 	    		if(mat.height() <= 0) {
