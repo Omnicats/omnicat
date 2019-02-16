@@ -3,19 +3,20 @@ package util;
 public class Constants {
     //Lift
     public static final double liftDown = 0;
-    public static final double liftHatchLow = 0;
+    public static final double liftHatchLow = 500;
     public static final double liftRocketLow_Cargo = 0;
     public static final double liftCargoShip_Cargo = 0;
-    public static final double liftRocketMedium_Hatch = 0;
+    public static final double liftRocketMedium_Hatch = 1000;
     public static final double liftRocketMedium_Cargo = 0;
-    public static final double liftRocketHigh_Hatch = 0;
+    public static final double liftRocketHigh_Hatch = 1500;
 
-    public static final double liftKP = 0;
-    public static final double liftKI = 0;
-    public static final double liftKD = 0;
-    public static final double liftKF = 0;
+    public static final double liftKP = 5;
+    public static final double liftKI = 0.006;
+    public static final double liftKD = 250;
+    public static final double liftKF = 0.3;
     public static final int liftMaxV = 0;
     public static final int liftMaxA = 0;
+    public static final int liftIZone = 200;
 
     //Scoop
     public static final double scoopUp = 0;
@@ -39,10 +40,10 @@ public class Constants {
 
     //Climber
     public static final double climberForward = 0;
-    public static final double climberDown = 0;
-    public static final double climberBack = 0;
+    public static final double climberDown = 235000;
+    public static final double climberBack = 417500;
 
-    public static final double climberKP = 0;
+    public static final double climberKP = 0.01;
     public static final double climberKI = 0;
     public static final double climberKD = 0;
     public static final double climberKF = 0;

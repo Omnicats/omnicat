@@ -5,15 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package mechanism;
+package mechanism.scoop;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import util.Subsystem;
 import util.Constants;
 
-public class Scoop {
+public class Scoop extends Subsystem{
   TalonSRX scoop;
 
   public Scoop(TalonSRX scoop){
@@ -44,5 +45,18 @@ public class Scoop {
 
   public void goTo(double pos){
     scoop.set(ControlMode.Position, pos); //Change to motion magic
+  }
+
+  public void freeze(){
+    scoop.set(ControlMode.Position, scoop.getSelectedSensorPosition());
+  }
+
+  public void shutoff(){
+    scoop.set(ControlMode.PercentOutput, 0);
+  }
+
+  @Override
+  protected void initDefaultCommand() {
+
   }
 }

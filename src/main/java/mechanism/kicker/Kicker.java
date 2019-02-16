@@ -5,15 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package mechanism;
+package mechanism.kicker;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import util.Subsystem;
 import util.Constants;
 
-public class Kicker {
+public class Kicker extends Subsystem{
   TalonSRX kicker;
 
   public Kicker(TalonSRX kicker){
@@ -44,5 +45,10 @@ public class Kicker {
 
   public void goTo(double pos){
     kicker.set(ControlMode.Position, pos); //Change to motion magic
+  }
+
+  @Override
+  protected void initDefaultCommand() {
+
   }
 }

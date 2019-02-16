@@ -5,15 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package mechanism;
+package mechanism.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import util.Subsystem;
 import util.Constants;
 
-public class Climber {
+public class Climber extends Subsystem{
   TalonSRX climber;
   TalonSRX climberFollower;
 
@@ -47,5 +48,18 @@ public class Climber {
 
   public void goTo(double pos){
     climber.set(ControlMode.Position, pos); //Change to motion magic
+  }
+
+  public void freeze(){
+    climber.set(ControlMode.Position, climber.getSelectedSensorPosition());
+  }
+
+  public void shutoff(){
+    climber.set(ControlMode.PercentOutput, 0);
+  }
+
+  @Override
+  protected void initDefaultCommand() {
+
   }
 }

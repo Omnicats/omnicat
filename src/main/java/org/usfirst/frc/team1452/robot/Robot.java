@@ -1,23 +1,18 @@
 package org.usfirst.frc.team1452.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import mechanism.Climber;
-import mechanism.Kicker;
-import mechanism.Lift;
-import mechanism.Scoop;
+import mechanism.climber.Climber;
+import mechanism.kicker.Kicker;
+import mechanism.lift.Lift;
+import mechanism.scoop.Scoop;
 import mechanism.sensor.CameraStream;
 import mechanism.sensor.VisionProcessing;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.*;
+import util.Constants;
 
 
 /**
@@ -32,12 +27,12 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX frontRight = new WPI_TalonSRX(1);
 
   WPI_TalonSRX leftSlave = new WPI_TalonSRX(12);
-  WPI_TalonSRX rightSlave = new WPI_TalonSRX(0);  
+  WPI_TalonSRX rightSlave = new WPI_TalonSRX(0);
 
-  Scoop scoop;
-  Kicker kicker;
-  Climber climber;
-  Lift lift;
+  public static Scoop scoop;
+  public static Kicker kicker;
+  public static Climber climber;
+  public static Lift lift;
 
   DifferentialDrive drive = new DifferentialDrive(frontLeft, frontRight);
   Joystick j = new Joystick(0);
@@ -53,10 +48,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    leftSlave.follow(frontLeft);
+	  rightSlave.follow(frontRight);
+    
+    frontLeft.setInverted(false);
+    frontRight.setInverted(true);
+    leftSlave.setInverted(InvertType.FollowMaster);
+	  rightSlave.setInverted(InvertType.FollowMaster);
+    
+    drive.setRightSideInverted(false); 
+    
+
     scoop = new Scoop(new WPI_TalonSRX(6));
     kicker = new Kicker(new WPI_TalonSRX(7));
     climber = new Climber(new WPI_TalonSRX(4), new WPI_TalonSRX(5));
-    lift = new Lift(new WPI_TalonSRX(2), new WPI_TalonSRX(10));
+    lift = new Lift(new WPI_TalonSRX(10), new WPI_TalonSRX(2));
   }
 
   @Override
@@ -69,15 +75,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {    
-    leftSlave.follow(frontLeft);
-	  rightSlave.follow(frontRight);
-    
-    frontLeft.setInverted(false);
-    frontRight.setInverted(true);
-    leftSlave.setInverted(InvertType.FollowMaster);
-	  rightSlave.setInverted(InvertType.FollowMaster);
-    
-    drive.setRightSideInverted(false); 
   }
 
   @Override
@@ -98,7 +95,7 @@ public class Robot extends TimedRobot {
     double kickerVal = j2.getY();
     double scoopVal = j2.getThrottle();
     double climberVal = j2.getY() * Math.abs(j2.getY());
-    double liftVal = -j2.getThrottle() * Math.abs(j2.getThrottle());
+    //double liftVal = -j2.getThrottle() * Math.abs(j2.getThrottle());
 
     if (Math.abs(kickerVal) < 0.015) {
       kickerVal = 0;
@@ -112,32 +109,32 @@ public class Robot extends TimedRobot {
   
     if(j2.getRawButtonPressed(1)){
       //lift.set(ControlMode.Position, 500);
-      scoop.set(ControlMode.Position, 0);
+      //climber.goTo(Constants.climberForward);
+      lift.goTo(Constants.liftHatchLow);
     }
     if(j2.getRawButtonPressed(4)){
       //lift.set(ControlMode.Position, 1500);
-      scoop.set(ControlMode.Position, 1025);
+      //climber.goTo(Constants.climberDown);
+      lift.goTo(Constants.liftRocketMedium_Hatch);
     }
-    
-
-    
     if(j2.getRawButtonPressed(3)){
       //lift.set(ControlMode.Position, 2500);
-      scoop.set(ControlMode.Position, 1300);
-    }
-    if(j2.getRawButtonPressed(10)){
-      //lift.setSelectedSensorPosition(0, 0, 30);
-      scoop.setSelectedSensorPosition(0, 0, 30);
+      //climber.goTo(Constants.climberBack);
+      lift.goTo(Constants.liftRocketHigh_Hatch);
     }
     if(j2.getRawButton(2)){
       //lift.set(0);
-      scoop.set(0);
+      //climber.shutoff();
+      lift.setPower(j2.getY());
     }
+    /*if(j2.getRawButton(6)){
+      lift.zero();
+    }*/
 
-    kicker.set(j2.getRawButton(5) ? 0 : kickerVal);
+    //kicker.set(j2.getRawButton(5) ? 0 : kickerVal);
     //scoop.set(j2.getRawButton(5) ? 0 : scoopVal);
-    climber.set(j2.getRawButton(5) ? climberVal : 0);
-    lift.set(j2.getRawButton(5) ? liftVal : 0);
+    //climber.set(j2.getRawButton(5) ? climberVal : 0);
+    //lift.set(j2.getRawButton(5) ? liftVal : 0);
     //liftFollower.set(j2.getRawButton(7) ? liftVal : 0);
   }
 

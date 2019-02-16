@@ -5,16 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package mechanism;
+package mechanism.lift;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import util.Subsystem;
 import util.Constants;
 
-public class Lift {
+public class Lift extends Subsystem{
   TalonSRX lift;
   TalonSRX liftFollower;
 
@@ -23,7 +24,7 @@ public class Lift {
     this.liftFollower = liftFollower;
     liftFollower.follow(lift);
 
-    lift.setInverted(true);
+    lift.setInverted(false);
     liftFollower.follow(lift);
     liftFollower.setInverted(InvertType.OpposeMaster);
 
@@ -46,6 +47,8 @@ public class Lift {
     lift.config_kI(0, Constants.liftKI, 30);
     lift.config_kD(0, Constants.liftKD, 30);
 
+    lift.config_IntegralZone(0, Constants.liftIZone);
+
     /* Set acceleration and vcruise velocity - see documentation */
     lift.configMotionCruiseVelocity(Constants.liftMaxV, 30);
     lift.configMotionAcceleration(Constants.liftMaxA, 30);
@@ -57,4 +60,17 @@ public class Lift {
   public void goTo(double pos){
     lift.set(ControlMode.Position, pos); //Change to motion magic
   }
+
+  public void setPower(double power){
+    lift.set(ControlMode.PercentOutput, power);
+  }
+
+  @Override
+  protected void initDefaultCommand() {
+
+  }
+
+  /*public void zero(){
+    //lift.setSelectedSensorPosition(0);
+  }*/
 }
