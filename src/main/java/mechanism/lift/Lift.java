@@ -60,6 +60,19 @@ public class Lift extends Subsystem{
   public void goTo(double pos){
     lift.set(ControlMode.Position, pos); //Change to motion magic
   }
+  
+  public void freeze(){
+    lift.set(ControlMode.Position, lift.getSelectedSensorPosition());
+  }
+
+  public void shutoff(){
+    lift.set(ControlMode.PercentOutput, 0);
+  }
+  
+  public boolean withinThreshold(double pos){
+	return Math.abs(lift.getSelectedSensorPosition() - pos) < Constants.liftPThreshold && Math.abs(lift.getSelectedSensorVelocity) < Constants.liftVThreshold;
+  }
+
 
   public void setPower(double power){
     lift.set(ControlMode.PercentOutput, power);

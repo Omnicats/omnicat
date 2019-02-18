@@ -19,8 +19,8 @@ public class Freeze extends InstantCommand {
 
   public Freeze(Subsystem s) {
     super();
-    requires(s);
     this.s = s;
+    requires(s);
   }
 
   // Called once when the command executes

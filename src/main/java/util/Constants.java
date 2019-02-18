@@ -17,6 +17,8 @@ public class Constants {
     public static final int liftMaxV = 0;
     public static final int liftMaxA = 0;
     public static final int liftIZone = 200;
+    public static final double liftPThreshold = 50;
+    public static final double liftVThreshold = 10;
 
     //Scoop
     public static final double scoopUp = 0;
@@ -27,16 +29,23 @@ public class Constants {
     public static final double scoopKI = 0;
     public static final double scoopKD = 0;
     public static final double scoopKF = 0;
+    public static final double scoopPThreshold = 25;
+    public static final double scoopVThreshold = 10;
 
     //Kicker
     public static final double kickerUp = 0;
     public static final double kickerHoldHatch = 0;
+    public static final double kickerDepositHatch = 0;
+    public static final double kickerDisengageHatch = 0;
     public static final double kickerDown = 0;
 
     public static final double kickerKP = 0;
     public static final double kickerKI = 0;
     public static final double kickerKD = 0;
     public static final double kickerKF = 0;
+    public static final double kickerPThreshold = 25;
+    public static final double kickerVThreshold = 10;
+
 
     //Climber
     public static final double climberForward = 0;
@@ -47,4 +56,6 @@ public class Constants {
     public static final double climberKI = 0;
     public static final double climberKD = 0;
     public static final double climberKF = 0;
+    public static final double climberPThreshold = 5000;
+    public static final double climberVThreshold = 1000;
 }

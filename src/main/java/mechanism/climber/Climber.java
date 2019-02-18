@@ -58,6 +58,10 @@ public class Climber extends Subsystem{
     climber.set(ControlMode.PercentOutput, 0);
   }
 
+  public boolean withinThreshold(double pos){
+	return Math.abs(climber.getSelectedSensorPosition() - pos) < Constants.climberPThreshold && Math.abs(climber.getSelectedSensorVelocity) < Constants.climberVThreshold;
+  }
+  
   @Override
   protected void initDefaultCommand() {
 

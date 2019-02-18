@@ -19,8 +19,8 @@ public class Shutoff extends InstantCommand {
 
   public Shutoff(Subsystem s) {
     super();
-    requires(s);
     this.s = s;
+    requires(s);
   }
 
   // Called once when the command executes

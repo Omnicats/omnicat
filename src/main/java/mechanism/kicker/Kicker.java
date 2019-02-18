@@ -47,6 +47,18 @@ public class Kicker extends Subsystem{
     kicker.set(ControlMode.Position, pos); //Change to motion magic
   }
 
+  public void freeze(){
+    kicker.set(ControlMode.Position, kicker.getSelectedSensorPosition());
+  }
+
+  public void shutoff(){
+    kicker.set(ControlMode.PercentOutput, 0);
+  }
+  
+  public boolean withinThreshold(double pos){
+	return Math.abs(kicker.getSelectedSensorPosition() - pos) < Constants.kickerPThreshold && Math.abs(kicker.getSelectedSensorVelocity) < Constants.kickerVThreshold;
+  }
+  
   @Override
   protected void initDefaultCommand() {
 

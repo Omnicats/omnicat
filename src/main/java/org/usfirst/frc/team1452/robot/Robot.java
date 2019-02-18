@@ -33,15 +33,17 @@ public class Robot extends TimedRobot {
   public static Kicker kicker;
   public static Climber climber;
   public static Lift lift;
+  public static OI oi;
 
   DifferentialDrive drive = new DifferentialDrive(frontLeft, frontRight);
-  Joystick j = new Joystick(0);
-  Joystick j1 = new Joystick(1);
-  Joystick j2 = new Joystick(2);
+  public static Joystick throttleJ = new Joystick(0);
+  public static Joystick turnJ = new Joystick(1);
+  public static Joystick j2 = new Joystick(2);
 
   CameraStream stream = new CameraStream();
-  VisionProcessing processing = new VisionProcessing(stream, j2);
+  VisionProcessing processing = new VisionProcessing(stream, mechBoard);
 
+  boolean intaking = false;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -63,6 +65,7 @@ public class Robot extends TimedRobot {
     kicker = new Kicker(new WPI_TalonSRX(7));
     climber = new Climber(new WPI_TalonSRX(4), new WPI_TalonSRX(5));
     lift = new Lift(new WPI_TalonSRX(10), new WPI_TalonSRX(2));
+    //oi = new OI();
   }
 
   @Override
@@ -79,8 +82,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double forward = -1.0 * j.getY() * Math.abs(j.getY());  // Sign this so forward is positive
-    double turn = 1.0 * j1.getX(); 
+	Scheduler.getInstance().run();
+    double forward = -1.0 * throttleJ.getY() * Math.abs(throttleJ.getY());  // Sign this so forward is positive
+    double turn = 1.0 * turnJ.getX(); 
     
     if (Math.abs(forward) < 0.025) {
       forward = 0;
@@ -88,14 +92,14 @@ public class Robot extends TimedRobot {
     if (Math.abs(turn) < 0.025) {
       turn = 0;
     }
-    drive.curvatureDrive(forward, turn, j.getRawButton(1));
+    drive.curvatureDrive(forward, turn, throttleJ.getRawButton(1));
 
     ////////////////////////////////////////////////////
 
-    double kickerVal = j2.getY();
+    /*double kickerVal = j2.getY();
     double scoopVal = j2.getThrottle();
     double climberVal = j2.getY() * Math.abs(j2.getY());
-    //double liftVal = -j2.getThrottle() * Math.abs(j2.getThrottle());
+    double liftVal = -j2.getThrottle() * Math.abs(j2.getThrottle());
 
     if (Math.abs(kickerVal) < 0.015) {
       kickerVal = 0;
@@ -105,7 +109,7 @@ public class Robot extends TimedRobot {
     }
     if (Math.abs(climberVal) < 0.015) {
       climberVal = 0;
-    }
+    }*/
   
     if(j2.getRawButtonPressed(1)){
       //lift.set(ControlMode.Position, 500);
