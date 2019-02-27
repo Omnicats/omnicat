@@ -1,8 +1,18 @@
+package commands.routines;
+
+import org.usfirst.frc.team1452.robot.Robot;
+
+import commands.global.Freeze;
+import commands.global.Shutoff;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import mechanism.drive.DriverControl;
+
 public class Cancel extends CommandGroup {
     public Cancel() {
-    	addParallel(new Freeze(Robot.lift));
-    	addParallel(new Freeze(Robot.climber));
-    	addParallel(new Freeze(Robot.kicker));
-    	addParallel(new Freeze(Robot.scoop));
+		addParallel(new DriverControl());
+    	addParallel(new Shutoff(Robot.lift));
+    	addParallel(new Shutoff(Robot.climber));
+    	addParallel(new Shutoff(Robot.kicker));
+		addParallel(new Shutoff(Robot.scoop));
     }
 }

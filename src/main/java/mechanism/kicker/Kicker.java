@@ -39,12 +39,15 @@ public class Kicker extends Subsystem{
     kicker.config_kI(0, Constants.kickerKI, 30);
     kicker.config_kD(0, Constants.kickerKD, 30);
 
+    kicker.configMotionCruiseVelocity(Constants.kickerMaxV, 30);
+    kicker.configMotionAcceleration(Constants.kickerMaxA, 30);
+
     /* Zero the sensor */
     kicker.setSelectedSensorPosition(0, 0, 30);
   }
 
   public void goTo(double pos){
-    kicker.set(ControlMode.Position, pos); //Change to motion magic
+    kicker.set(ControlMode.MotionMagic, pos); //Change to motion magic
   }
 
   public void freeze(){
@@ -56,7 +59,11 @@ public class Kicker extends Subsystem{
   }
   
   public boolean withinThreshold(double pos){
-	return Math.abs(kicker.getSelectedSensorPosition() - pos) < Constants.kickerPThreshold && Math.abs(kicker.getSelectedSensorVelocity) < Constants.kickerVThreshold;
+	return Math.abs(kicker.getSelectedSensorPosition() - pos) < Constants.kickerPThreshold && Math.abs(kicker.getSelectedSensorVelocity()) < Constants.kickerVThreshold;
+  }
+
+  public void setPower(double power){
+    kicker.set(ControlMode.PercentOutput, power);
   }
   
   @Override

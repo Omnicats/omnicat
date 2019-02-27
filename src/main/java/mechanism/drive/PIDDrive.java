@@ -1,13 +1,11 @@
 package mechanism.drive;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class PIDDrive {
-	/*private Drive drive;
-	public void setInvertedMotor(int ...port) {
-		drive.setInverted(port);
-	}
-	public Drive getDrive() {
+	/*private DifferentialDrive drive;
+
+	public DifferentialDrive getDrive() {
 		return drive;
 	}
 	
@@ -35,7 +33,7 @@ public class PIDDrive {
 		this.kd = kd;
 	}
 	
-	public PIDDrive(double kp, double ki, double kd, Drive drive) {
+	public PIDDrive(double kp, double ki, double kd, DifferentialDrive drive) {
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;

@@ -42,6 +42,11 @@ public class Climber extends Subsystem{
     climber.config_kI(0, Constants.climberKI, 30);
     climber.config_kD(0, Constants.climberKD, 30);
 
+    climber.configMotionCruiseVelocity(Constants.climberMaxV, 30);
+    climber.configMotionAcceleration(Constants.climberMaxA, 30);
+
+    climber.configClosedloopRamp(1);
+
     /* Zero the sensor */
     climber.setSelectedSensorPosition(0, 0, 30);
   }
@@ -59,9 +64,13 @@ public class Climber extends Subsystem{
   }
 
   public boolean withinThreshold(double pos){
-	return Math.abs(climber.getSelectedSensorPosition() - pos) < Constants.climberPThreshold && Math.abs(climber.getSelectedSensorVelocity) < Constants.climberVThreshold;
+	return Math.abs(climber.getSelectedSensorPosition() - pos) < Constants.climberPThreshold && Math.abs(climber.getSelectedSensorVelocity()) < Constants.climberVThreshold;
   }
   
+  public void setPower(double power){
+    climber.set(ControlMode.PercentOutput, power);
+  }
+
   @Override
   protected void initDefaultCommand() {
 

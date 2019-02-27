@@ -8,6 +8,7 @@
 package commands.global;
 
 import edu.wpi.first.wpilibj.command.Command;
+import util.Subsystem;
 
 public class SetPos extends Command {
   double pos;
@@ -33,7 +34,7 @@ public class SetPos extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-	return s.withinThreshold(pos);
+	  return s.withinThreshold(pos);
   }
 
   // Called once after isFinished returns true

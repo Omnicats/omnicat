@@ -11,7 +11,7 @@ package util;
  * Add your docs here.
  */
 public abstract class Subsystem extends edu.wpi.first.wpilibj.command.Subsystem{
-	public void withinThreshold(double pos){};
+	public boolean withinThreshold(double pos){return false;};
 	public void goTo(double pos){};
     public void shutoff(){};
     public void freeze(){};

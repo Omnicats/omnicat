@@ -11,21 +11,31 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import util.Subsystem;
 import util.Constants;
 
 public class Lift extends Subsystem{
-  TalonSRX lift;
-  TalonSRX liftFollower;
+  WPI_TalonSRX lift;
+  WPI_TalonSRX liftFollower;
+  private NetworkTableEntry encoderEntry;
+  private NetworkTableEntry motorEntry;
+  private NetworkTableEntry integralEntry;
+  private NetworkTableEntry maxEncoderEntry;
 
-  public Lift(TalonSRX lift, TalonSRX liftFollower){
+
+
+  public Lift(WPI_TalonSRX lift, WPI_TalonSRX liftFollower){
     this.lift = lift;
     this.liftFollower = liftFollower;
+    lift.configFactoryDefault();
+    liftFollower.configFactoryDefault();
     liftFollower.follow(lift);
 
     lift.setInverted(false);
-    liftFollower.follow(lift);
     liftFollower.setInverted(InvertType.OpposeMaster);
 
     lift.setSensorPhase(true);
@@ -48,6 +58,7 @@ public class Lift extends Subsystem{
     lift.config_kD(0, Constants.liftKD, 30);
 
     lift.config_IntegralZone(0, Constants.liftIZone);
+    //lift.configMaxIntegralAccumulator(0, 30000, 30);
 
     /* Set acceleration and vcruise velocity - see documentation */
     lift.configMotionCruiseVelocity(Constants.liftMaxV, 30);
@@ -55,10 +66,16 @@ public class Lift extends Subsystem{
 
     /* Zero the sensor */
     lift.setSelectedSensorPosition(0, 0, 30);
+
+    encoderEntry = Shuffleboard.getTab("Lift").add("Lift Encoder", 0).getEntry();	
+    motorEntry = Shuffleboard.getTab("Lift").add("Lift Output Power", 0).getEntry();	
+    integralEntry = Shuffleboard.getTab("Lift").add("Lift Integral Accumulator", 0).getEntry();	
+    maxEncoderEntry = Shuffleboard.getTab("Lift").add("Max Encoder Value", 0).getEntry();	
+
   }
 
   public void goTo(double pos){
-    lift.set(ControlMode.Position, pos); //Change to motion magic
+    lift.set(ControlMode.MotionMagic, pos); //Change to motion magic
   }
   
   public void freeze(){
@@ -70,9 +87,8 @@ public class Lift extends Subsystem{
   }
   
   public boolean withinThreshold(double pos){
-	return Math.abs(lift.getSelectedSensorPosition() - pos) < Constants.liftPThreshold && Math.abs(lift.getSelectedSensorVelocity) < Constants.liftVThreshold;
+	  return Math.abs(lift.getSelectedSensorPosition() - pos) < Constants.liftPThreshold && Math.abs(lift.getSelectedSensorVelocity()) < Constants.liftVThreshold;
   }
-
 
   public void setPower(double power){
     lift.set(ControlMode.PercentOutput, power);
@@ -81,6 +97,13 @@ public class Lift extends Subsystem{
   @Override
   protected void initDefaultCommand() {
 
+  }
+
+  public void updateEntries(){
+    encoderEntry.setNumber(lift.getSelectedSensorPosition());
+    motorEntry.setNumber(lift.getMotorOutputPercent());
+    integralEntry.setNumber(lift.getIntegralAccumulator());
+    maxEncoderEntry.setNumber(Math.max(lift.getSelectedSensorPosition(), maxEncoderEntry.getDouble(0)));
   }
 
   /*public void zero(){

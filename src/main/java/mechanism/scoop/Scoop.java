@@ -56,7 +56,11 @@ public class Scoop extends Subsystem{
   }
   
   public boolean withinThreshold(double pos){
-	return Math.abs(scoop.getSelectedSensorPosition() - pos) < Constants.scoopPThreshold && Math.abs(scoop.getSelectedSensorVelocity) < Constants.scoopVThreshold;
+	return Math.abs(scoop.getSelectedSensorPosition() - pos) < Constants.scoopPThreshold && Math.abs(scoop.getSelectedSensorVelocity()) < Constants.scoopVThreshold;
+  }
+
+  public void setPower(double power){
+    scoop.set(ControlMode.PercentOutput, power);
   }
 
   @Override
