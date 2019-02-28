@@ -45,7 +45,7 @@ public class Climber extends Subsystem{
     climber.configMotionCruiseVelocity(Constants.climberMaxV, 30);
     climber.configMotionAcceleration(Constants.climberMaxA, 30);
 
-    climber.configClosedloopRamp(1);
+    //climber.set(Mode, demand0, demand1Type, demand1);;
 
     /* Zero the sensor */
     climber.setSelectedSensorPosition(0, 0, 30);

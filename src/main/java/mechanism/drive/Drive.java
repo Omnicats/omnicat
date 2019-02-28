@@ -19,14 +19,14 @@ import util.Subsystem;
 import util.Constants;
 
 public class Drive extends Subsystem{
-  WPI_TalonSRX frontLeft = new WPI_TalonSRX(11);
-  WPI_TalonSRX frontRight = new WPI_TalonSRX(1);
+  WPI_TalonSRX frontLeft;
+  WPI_TalonSRX frontRight;
 
-  WPI_TalonSRX leftFollower = new WPI_TalonSRX(12);
-  WPI_TalonSRX rightFollower = new WPI_TalonSRX(0);
+  WPI_TalonSRX leftFollower;
+  WPI_TalonSRX rightFollower;
 
-  DifferentialDrive drive = new DifferentialDrive(frontLeft, frontRight);
-
+  DifferentialDrive drive;
+  
   public Drive(WPI_TalonSRX frontLeft, WPI_TalonSRX leftFollower, WPI_TalonSRX frontRight, WPI_TalonSRX rightFollower){
     this.frontLeft = frontLeft;
     this.leftFollower = leftFollower;
@@ -72,6 +72,6 @@ public class Drive extends Subsystem{
 
   @Override
   protected void initDefaultCommand() {
-    new DriverControl();
+    //new DriverControl();
   }
 }

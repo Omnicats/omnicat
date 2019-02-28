@@ -51,10 +51,10 @@ public class Robot extends TimedRobot {
   public void robotInit() { 
     drive = new Drive(new WPI_TalonSRX(11), new WPI_TalonSRX(12), new WPI_TalonSRX(1), new WPI_TalonSRX(0));
     scoop = new Scoop(new WPI_TalonSRX(6));
-    kicker = new Kicker(new WPI_TalonSRX(7));
-    climber = new Climber(new WPI_TalonSRX(4), new WPI_TalonSRX(5));
+    kicker = new Kicker(new WPI_TalonSRX(8)); //7
+    climber = new Climber(new WPI_TalonSRX(7), new WPI_TalonSRX(9)); //4, 5
     lift = new Lift(new WPI_TalonSRX(10), new WPI_TalonSRX(2));
-    //oi = new OI();
+    oi = new OI();
   }
 
   @Override
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-	  //Scheduler.getInstance().run();
+	  Scheduler.getInstance().run();
     ////////////////////////////////////////////////////
 
     double kickerVal = j2.getY();
@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
       climberVal = 0;
     }
   
-    if(j2.getRawButtonPressed(1)){
+    /*if(j2.getRawButtonPressed(1)){
       //lift.goTo(Constants.liftDown);
       climber.goTo(Constants.climberForward);
     }
@@ -124,6 +124,17 @@ public class Robot extends TimedRobot {
     }
 
     lift.updateEntries();
+    double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
+    double turn = 1.0 * Robot.turnJ.getX(); 
+    
+    if (Math.abs(forward) < 0.025) {
+      forward = 0;
+    }
+    if (Math.abs(turn) < 0.025) {
+      turn = 0;
+    }
+    drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));*/
+
     //kicker.set(j2.getRawButton(5) ? 0 : kickerVal);
     //scoop.set(j2.getRawButton(5) ? 0 : scoopVal);
     //climber.set(j2.getRawButton(5) ? climberVal : 0);
