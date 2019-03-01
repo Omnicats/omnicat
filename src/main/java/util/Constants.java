@@ -5,7 +5,8 @@ public class Constants {
     public static final double liftDown = 0;
     public static final double liftHatchLow = 820;
     public static final double liftRocketLow_Cargo = 400;
-    public static final double liftCargoShip_Cargo = 0;
+    public static final double liftCargoShip_Cargo = 1430;
+    public static final double liftCargoShip_Dump = 2150;
     public static final double liftRocketMedium_Hatch = 2550;
     public static final double liftRocketMedium_Cargo = 2300;
     public static final double liftRocketHigh_Hatch = 3780;
@@ -34,12 +35,12 @@ public class Constants {
     public static final double scoopVThreshold = 10;
 
     //Kicker
-    public static final double kickerUp = 0;
-    public static final double kickerHoldHatch = 150;
-    public static final double kickerHoldCargo = 330;
+    public static final double kickerUp = 50;
+    public static final double kickerHoldHatch = 220; //150
+    public static final double kickerHoldCargo = 450; //330
     public static final double kickerDepositHatch = 530;
     public static final double kickerDisengageHatch = 655;
-    public static final double kickerDown = 810;
+    public static final double kickerDown = 950; //810
     public static final double kickerPanic = 1100;
 
     public static final double kickerKP = 10;
@@ -69,4 +70,24 @@ public class Constants {
 
     //Drive
     public static final double driveWheelDiameter = 0;
+
+    public static final double driveTurnKP = 0;
+    public static final double driveTurnKI = 0;
+    public static final double driveTurnKD = 0;
+    public static final double driveTurnKF = 0;
+    public static final int driveTurnMaxV = 0;
+    public static final int driveTurnMaxA = 0;
+    public static final int driveTurnIZone = 0;
+    public static final double driveTurnPThreshold = 0;
+    public static final double driveTurnVThreshold = 0;
+
+    public static final double driveThrottleKP = 0;
+    public static final double driveThrottleKI = 0;
+    public static final double driveThrottleKD = 0;
+    public static final double driveThrottleKF = 0;
+    public static final int driveThrottleMaxV = 0;
+    public static final int driveThrottleMaxA = 0;
+    public static final int driveThrottleIZone = 0;
+    public static final double driveThrottlePThreshold = 0;
+    public static final double driveThrottleVThreshold = 0;
 }

@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
       }
     }
 
-    lift.updateEntries();
+    lift.updateEntries();*/
     double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
     double turn = 1.0 * Robot.turnJ.getX(); 
     
@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
     if (Math.abs(turn) < 0.025) {
       turn = 0;
     }
-    drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));*/
+    drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));
 
     //kicker.set(j2.getRawButton(5) ? 0 : kickerVal);
     //scoop.set(j2.getRawButton(5) ? 0 : scoopVal);
