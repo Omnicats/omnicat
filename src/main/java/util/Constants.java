@@ -71,12 +71,11 @@ public class Constants {
     //Drive
     public static final double driveWheelDiameter = 0;
 
-    public static final double driveTurnKP = 0;
+    public static final double driveTurnKP = 1;
     public static final double driveTurnKI = 0;
     public static final double driveTurnKD = 0;
     public static final double driveTurnKF = 0;
-    public static final int driveTurnMaxV = 0;
-    public static final int driveTurnMaxA = 0;
+    public static final double driveTurnMaxPower = 0.5;
     public static final int driveTurnIZone = 0;
     public static final double driveTurnPThreshold = 0;
     public static final double driveTurnVThreshold = 0;
@@ -90,4 +89,7 @@ public class Constants {
     public static final int driveThrottleIZone = 0;
     public static final double driveThrottlePThreshold = 0;
     public static final double driveThrottleVThreshold = 0;
+
+    public static final double driveEncoderUnitsPerRotation = 1452 * 4; //5808
+    public static final double driveTurnUnitsPerRotation = 3600;
 }

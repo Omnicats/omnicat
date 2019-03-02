@@ -49,7 +49,7 @@ public class RetroreflectorPipeline implements VisionPipeline {
 
 		// Step Find_Contours0:
 		Mat findContoursInput = hsvThresholdOutput;
-		boolean findContoursExternalOnly = true;
+		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 
 		// Step Filter_Contours0:

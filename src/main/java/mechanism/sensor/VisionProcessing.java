@@ -13,6 +13,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import org.opencv.core.Rect;
@@ -23,7 +24,8 @@ import org.usfirst.frc.team1452.robot.OI;
 public class VisionProcessing {
 	private int IMG_WIDTH = 320;
 	private int IMG_HEIGHT = 240;
-	private double INCHES_PER_PIXEL = 5.39717889014	/ IMG_HEIGHT;
+	private double FOCAL_LENGTH = 7.7 * IMG_HEIGHT;
+	private double DEGREES_PER_PIXEL = 23 / 160;
 	private Thread processingThread;
 	private double centerX;
 	private double centerHeight;
@@ -48,7 +50,7 @@ public class VisionProcessing {
 	    		if(mat.height() <= 0) {
 	    			continue;
 				}
-				if(!OI.hatchSwitch.get()){
+				if(false){ //!OI.hatchSwitch.get()
 					cPipeline.process(mat);
 					synchronized(centerLock){
 						centerX = cPipeline.findMinAndMaxMaxLoc().x;
@@ -61,15 +63,21 @@ public class VisionProcessing {
 					PriorityQueue<RotatedRect> leftTargets = new PriorityQueue<>(5, new RotatedRectComparator());
 					PriorityQueue<RotatedRect> rightTargets = new PriorityQueue<>(5, new RotatedRectComparator());
 					
-					for(int i = 0; i < rPipeline.filterContoursOutput().size(); i++){
-						MatOfPoint2f contour = new MatOfPoint2f(rPipeline.filterContoursOutput().get(i));
+					//DriverStation.reportWarning("Contours found: " + rPipeline.findContoursOutput().size(), false);
+
+					for(int i = 0; i < Math.min(2, rPipeline.findContoursOutput().size()); i++){
+						MatOfPoint2f contour = new MatOfPoint2f(rPipeline.findContoursOutput().get(i).toArray());
 						RotatedRect rotatedRect = Imgproc.minAreaRect(contour);
+						DriverStation.reportWarning("angle:" + (rotatedRect.angle+360)%90 , false);
 						if((rotatedRect.angle + 360)%90 < 45){
 							leftTargets.add(rotatedRect);
 						}else{
 							rightTargets.add(rotatedRect);
 						}
 					}
+
+					//DriverStation.reportWarning("Left found: " + leftTargets.size() + "  Right found: " + rightTargets.size(), false);
+
 
 					/*r1 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(0));
 					r2 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(1));
@@ -81,6 +89,7 @@ public class VisionProcessing {
 					Queue<Double> heights = new LinkedList<>();
 
 					while(leftTargets.size() > 0 && rightTargets.size() > 0){
+						DriverStation.reportWarning("help im stuck in a while loop", false);
 						if(rightTargets.peek().center.x < leftTargets.peek().center.x){
 							rightTargets.remove();
 							continue;
@@ -89,6 +98,8 @@ public class VisionProcessing {
 						heights.add((Math.max(leftTargets.peek().size.height, leftTargets.poll().size.width) + Math.max(rightTargets.peek().size.height, rightTargets.poll().size.width))/2);
 					}
 					
+					DriverStation.reportWarning("Pairs found: " + centers.size(), false);
+
 					if(centers.size()==0){
 						synchronized(centerLock){
 							centerX = IMG_WIDTH/2;
@@ -144,13 +155,14 @@ public class VisionProcessing {
 		return centerHeight;
 	}
     
-    public double getTurnError() {
-    	return (getCenterX() * 2 - IMG_WIDTH)/IMG_WIDTH;
+    public double getTurnErrorDegrees() {
+    	return (getCenterX() - IMG_WIDTH/2) * DEGREES_PER_PIXEL;
 	}
 	
 	public double getDistanceErrorInches(){
-		return getCenterHeight() * INCHES_PER_PIXEL;
+		return FOCAL_LENGTH / getCenterHeight();
 	}
+
 
 }
 

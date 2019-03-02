@@ -4,12 +4,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import mechanism.climber.Climber;
 import mechanism.drive.Drive;
 import mechanism.kicker.Kicker;
@@ -40,7 +42,9 @@ public class Robot extends TimedRobot {
   public static Joystick j2 = new Joystick(2);
 
   CameraStream stream = new CameraStream();
-  //VisionProcessing processing = new VisionProcessing(stream, j2);
+  VisionProcessing processing = new VisionProcessing(stream);
+
+  NetworkTableEntry distanceErrorEntry;
 
   Relay ledRelay = new Relay(0, Relay.Direction.kForward);
   /**
@@ -49,12 +53,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() { 
-    drive = new Drive(new WPI_TalonSRX(11), new WPI_TalonSRX(12), new WPI_TalonSRX(1), new WPI_TalonSRX(0));
+    drive = new Drive(new WPI_TalonSRX(11), new WPI_TalonSRX(12), new WPI_TalonSRX(0), new WPI_TalonSRX(1));
     scoop = new Scoop(new WPI_TalonSRX(6));
     kicker = new Kicker(new WPI_TalonSRX(8)); //7
-    climber = new Climber(new WPI_TalonSRX(7), new WPI_TalonSRX(9)); //4, 5
+    climber = new Climber(new WPI_TalonSRX(4), new WPI_TalonSRX(5)); //4, 5
     lift = new Lift(new WPI_TalonSRX(10), new WPI_TalonSRX(2));
-    oi = new OI();
+    //oi = new OI();
+
+    distanceErrorEntry = Shuffleboard.getTab("Vision").add("Distance Error", 0).getEntry();	
   }
 
   @Override
@@ -71,7 +77,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-	  Scheduler.getInstance().run();
+	  //Scheduler.getInstance().run();
     ////////////////////////////////////////////////////
 
     double kickerVal = j2.getY();
@@ -89,9 +95,22 @@ public class Robot extends TimedRobot {
       climberVal = 0;
     }
   
-    /*if(j2.getRawButtonPressed(1)){
+    if(j2.getRawButton(1)){ //pressed
       //lift.goTo(Constants.liftDown);
-      climber.goTo(Constants.climberForward);
+      //climber.goTo(Constants.climberForward);
+      drive.driveToHeading(1452);
+    }
+    else{
+      double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
+      double turn = 1.0 * Robot.turnJ.getX(); 
+      
+      if (Math.abs(forward) < 0.025) {
+        forward = 0;
+      }
+      if (Math.abs(turn) < 0.025) {
+        turn = 0;
+      }
+      drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));
     }
     if(j2.getRawButtonPressed(4)){
       //lift.goTo(Constants.liftRocketLow_Cargo);
@@ -111,7 +130,7 @@ public class Robot extends TimedRobot {
     if(j2.getRawButton(2)){
       //lift.setPower(j2.getY());
       //climber.shutoff();
-      climber.setPower(j2.getY());
+      //climber.setPower(j2.getY());
     }
     if(j2.getRawButtonPressed(6)){
       //lift.zero();
@@ -123,8 +142,7 @@ public class Robot extends TimedRobot {
       }
     }
 
-    lift.updateEntries();*/
-    double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
+    /*double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
     double turn = 1.0 * Robot.turnJ.getX(); 
     
     if (Math.abs(forward) < 0.025) {
@@ -133,7 +151,10 @@ public class Robot extends TimedRobot {
     if (Math.abs(turn) < 0.025) {
       turn = 0;
     }
-    drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));
+    drive.curvatureDrive(forward, turn, turnJ.getRawButton(1));*/
+
+    lift.updateEntries();
+    distanceErrorEntry.setDouble(processing.getDistanceErrorInches());
 
     //kicker.set(j2.getRawButton(5) ? 0 : kickerVal);
     //scoop.set(j2.getRawButton(5) ? 0 : scoopVal);
