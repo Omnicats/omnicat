@@ -35,12 +35,12 @@ public class OI {
 	
 	public OI() {
 		triggerButton.whenPressed(new DepositPreload());
-		rocketLowButton.whenPressed(hatchSwitch.get() ? new DepositHatchLow() : new DepositCargoLow());
-		rocketMidButton.whenPressed(hatchSwitch.get() ? new DepositHatchMid() : new DepositCargoMid());
-		rocketHighButton.whenPressed(hatchSwitch.get() ? new DepositHatchHigh() : new DepositCargoMid());
-		cargoShipButton.whenPressed(hatchSwitch.get() ? new DepositHatchLow() : new DepositCargoShip());
-		intakeHighButton.whenPressed(hatchSwitch.get() ? new Cancel() : new IntakeCargoHigh());
-		intakeLowButton.whenPressed(hatchSwitch.get() ? new IntakeHatch() : new IntakeCargoLow());
+		rocketLowButton.whenPressed(new RocketLow());
+		rocketMidButton.whenPressed(new RocketMid());
+		rocketHighButton.whenPressed(new RocketHigh());
+		cargoShipButton.whenPressed(new DepositCargoShip());
+		intakeHighButton.whenPressed(new IntakeHigh());
+		intakeLowButton.whenPressed(new intakeLow());
 		cancelButton.whenPressed(new Cancel()); //make a group command that switches based on switch
 		neutralButton.whenPressed(new Neutral());
 		liftDownButton.whenPressed(new NeutralWithGameObject());
