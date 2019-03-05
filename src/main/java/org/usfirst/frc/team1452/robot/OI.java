@@ -9,6 +9,7 @@ import commands.routines.*;
 
 
 public class OI {
+	public static boolean preloadActive = true;
 	public static Joystick throttleJ = new Joystick(0);
 	public static Joystick turnJ = new Joystick(1);  
 	public static Joystick mechBoard = new Joystick(2);
@@ -30,9 +31,10 @@ public class OI {
 
 	
 	public OI() {
+		triggerButton.whenPressed());
 		rocketLowButton.whenPressed(hatchSwitch.get() ? new DepositHatchLow() : new DepositCargoLow());
 		rocketMidButton.whenPressed(hatchSwitch.get() ? new DepositHatchMid() : new DepositCargoMid());
-		rocketHighButton.whenPressed(hatchSwitch.get() ? new DepositHatchHigh() : new Cancel());
+		rocketHighButton.whenPressed(hatchSwitch.get() ? new DepositHatchHigh() : new DepositCargoMid());
 		cargoShipButton.whenPressed(hatchSwitch.get() ? new DepositHatchLow() : new DepositCargoShip());
 		intakeHighButton.whenPressed(hatchSwitch.get() ? new Cancel() : new IntakeCargoHigh());
 		intakeLowButton.whenPressed(hatchSwitch.get() ? new IntakeHatch() : new IntakeCargoLow());

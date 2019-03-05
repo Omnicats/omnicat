@@ -23,6 +23,7 @@ public class Constants {
 
     //Scoop
     public static final double scoopUp = 0;
+    public static final double scoopDepositPreload = 100;
     public static final double scoopHoldCargo = -275;
     public static final double scoopDepositCargo = -900;
     public static final double scoopDown = -1300;
@@ -37,6 +38,7 @@ public class Constants {
     //Kicker
     public static final double kickerUp = 50;
     public static final double kickerHoldHatch = 220; //150
+    public static final double kickerDepositPreload = 220;//150
     public static final double kickerHoldCargo = 450; //330
     public static final double kickerDepositHatch = 530;
     public static final double kickerDisengageHatch = 655;
