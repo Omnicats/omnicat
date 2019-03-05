@@ -50,7 +50,7 @@ public class VisionProcessing {
 	    		if(mat.height() <= 0) {
 	    			continue;
 				}
-				if(false){ //!OI.hatchSwitch.get()
+				if(OI.acquiringCargo){ 
 					cPipeline.process(mat);
 					synchronized(centerLock){
 						centerX = cPipeline.findMinAndMaxMaxLoc().x;
@@ -58,9 +58,24 @@ public class VisionProcessing {
 				}
 				else{
 					rPipeline.process(mat);
+					if(rPipeline.filterContoursOutput().size() < 2){
+						synchronized(centerLock){
+							centerX = IMG_WIDTH/2;
+							centerHeight = 0;
+						}
+					}
+					else{
+						Rect r1 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(0));
+						Rect r2 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(1));
+						synchronized(centerLock){
+							centerX = ((r1.x + r1.width/2) + (r2.x + r2.width/2))/2;
+							centerHeight = (r1.height + r2.height)/2;
+						}
+					}
+
 					//TODO test, potentially add mask threshold thingy 
 					//https://stackoverflow.com/questions/34237253/detect-centre-and-angle-of-rectangles-in-an-image-using-opencv
-					PriorityQueue<RotatedRect> leftTargets = new PriorityQueue<>(5, new RotatedRectComparator());
+					/*PriorityQueue<RotatedRect> leftTargets = new PriorityQueue<>(5, new RotatedRectComparator());
 					PriorityQueue<RotatedRect> rightTargets = new PriorityQueue<>(5, new RotatedRectComparator());
 					
 					//DriverStation.reportWarning("Contours found: " + rPipeline.findContoursOutput().size(), false);
@@ -79,11 +94,6 @@ public class VisionProcessing {
 					//DriverStation.reportWarning("Left found: " + leftTargets.size() + "  Right found: " + rightTargets.size(), false);
 
 
-					/*r1 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(0));
-					r2 = Imgproc.boundingRect(rPipeline.filterContoursOutput().get(1));
-					synchronized(centerLock){
-						centerX = ((r1.x + r1.width/2) + (r2.x + r2.width/2))/2;
-					}*/
 
 					Queue<Double> centers = new LinkedList<>();
 					Queue<Double> heights = new LinkedList<>();
@@ -121,7 +131,7 @@ public class VisionProcessing {
 							centerX = IMG_WIDTH/2 + distanceFromCenter;
 							centerHeight = heightFromCenter;
 						}
-					}
+					}*/
 
 				}
 				centerXEntry.setNumber(centerX);

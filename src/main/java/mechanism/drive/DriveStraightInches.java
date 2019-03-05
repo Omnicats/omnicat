@@ -7,17 +7,22 @@
 
 package mechanism.drive;
 
+import org.usfirst.frc.team1452.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveStraightInches extends Command {
+  Drive drive;
+
   public DriveStraightInches() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    requires(Robot.drive);
+    this.drive = Robot.drive;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    drive.resetPIDs();
   }
 
   // Called repeatedly when this Command is scheduled to run

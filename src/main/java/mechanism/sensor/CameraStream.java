@@ -1,6 +1,7 @@
 package mechanism.sensor;
 
 import org.opencv.core.Mat;
+import org.usfirst.frc.team1452.robot.OI;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
@@ -22,20 +23,30 @@ public class CameraStream {
     public CameraStream() {    
         cameraRunningEntry = Shuffleboard.getTab("Vision").add("Camera Running", 0).getEntry();	
     	visionThread = new Thread(() -> {
-        	UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-        	camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
-        	camera.setFPS(FPS);
+			UsbCamera mainCamera = CameraServer.getInstance().startAutomaticCapture(0);
+			mainCamera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+        	mainCamera.setFPS(FPS);
+			UsbCamera cargoCamera = CameraServer.getInstance().startAutomaticCapture(1);
+        	cargoCamera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+        	cargoCamera.setFPS(FPS);
         	
         	CvSink sink = new CvSink("cam0");
-        	sink.setSource(camera);
+        	sink.setSource(mainCamera);
         	sink.setEnabled(true);
         	        	
-        	VideoSink server;
+        	VideoSink server; //is this necessary?
         	server = CameraServer.getInstance().getServer();
-        	server.setSource(camera);
-        	int cameraRunning = 0;
+        	server.setSource(mainCamera);
+			int cameraRunning = 0;
 			
 			while (!Thread.interrupted()) {
+				if(OI.acquiringCargo && !sink.getSource().equals(cargoCamera)){
+					sink.setSource(cargoCamera);
+				}
+				else if(!OI.acquiringCargo && !sink.getSource().equals(mainCamera)){
+					sink.setSource(mainCamera);
+				}
+
 				synchronized(imgLock) {
 					if (sink.grabFrame(mat) == 0) {
 						try {

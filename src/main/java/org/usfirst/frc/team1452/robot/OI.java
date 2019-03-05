@@ -2,6 +2,7 @@ package org.usfirst.frc.team1452.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import mechanism.drive.CameraControl;
 import mechanism.drive.DriverControl;
 import mechanism.drive.DriverThrottleCameraTurn;
@@ -29,9 +30,11 @@ public class OI {
 	public static JoystickButton quickTurnButton = new JoystickButton(Robot.throttleJ, 1);
 	JoystickButton visionProcessingButton = new JoystickButton(Robot.turnJ, 1);
 
+	public static boolean acquiringCargo = false;
+
 	
 	public OI() {
-		triggerButton.whenPressed());
+		triggerButton.whenPressed(new DepositPreload());
 		rocketLowButton.whenPressed(hatchSwitch.get() ? new DepositHatchLow() : new DepositCargoLow());
 		rocketMidButton.whenPressed(hatchSwitch.get() ? new DepositHatchMid() : new DepositCargoMid());
 		rocketHighButton.whenPressed(hatchSwitch.get() ? new DepositHatchHigh() : new DepositCargoMid());
@@ -45,4 +48,21 @@ public class OI {
 		visionProcessingButton.whenPressed(hatchSwitch.get() ? new DriverThrottleCameraTurn() : new CameraControl());
 		visionProcessingButton.whenReleased(new DriverControl());
 	}
+
+	public static double throttleOutput(){
+		double throttleOutput = -throttleJ.getY() * Math.abs(throttleJ.getY());
+		if (Math.abs(throttleOutput) < 0.025) {
+			throttleOutput = 0;
+		}
+		return throttleOutput;
+	}
+
+	public static double turnOutput(){
+		double turnOutput = -throttleJ.getY() * Math.abs(throttleJ.getY());
+		if (Math.abs(turnOutput) < 0.025) {
+			turnOutput = 0;
+		}
+		return turnOutput;
+	}
+
 }

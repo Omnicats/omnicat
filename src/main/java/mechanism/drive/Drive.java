@@ -19,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import org.usfirst.frc.team1452.robot.OI;
 import org.usfirst.frc.team1452.robot.Robot;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -33,6 +34,19 @@ public class Drive extends Subsystem{
   WPI_TalonSRX rightFollower;
 
   DifferentialDrive drive;
+
+  private static double turnPreviousError = 0;
+	private static double turnI = 0;
+	private static double turnD = 0;
+	private static double turnPreviousTime = 0;
+	private static double turnDT = 0;
+
+  private static double throttlePreviousError = 0;
+	private static double throttleI = 0;
+	private static double throttleD = 0;
+	private static double throttlePreviousTime = 0;
+	private static double throttleDT = 0;
+
 
   public Drive(WPI_TalonSRX frontLeft, WPI_TalonSRX leftFollower, WPI_TalonSRX frontRight, WPI_TalonSRX rightFollower){
     this.frontLeft = frontLeft;
@@ -51,7 +65,7 @@ public class Drive extends Subsystem{
     
     drive.setRightSideInverted(false); 
 
-    frontLeft.setSensorPhase(true);
+    /*frontLeft.setSensorPhase(true);
     frontRight.setSensorPhase(true);
 
     frontRight.configRemoteFeedbackFilter(frontLeft.getDeviceID(), RemoteSensorSource.TalonSRX_SelectedSensor, 0, 30); // 
@@ -61,7 +75,7 @@ public class Drive extends Subsystem{
 
     frontRight.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference, 1, 30);
 
-    frontRight.configSelectedFeedbackCoefficient(/*Constants.driveTurnUnitsPerRotation / Constants.driveEncoderUnitsPerRotation*/1  /*scale to 1/10 of a degree per unit*/, 1, 30);
+    frontRight.configSelectedFeedbackCoefficient(Constants.driveTurnUnitsPerRotation / Constants.driveEncoderUnitsPerRotation,  scale to 1/10 of a degree per unit, 30);
 
     frontRight.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
 		frontRight.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
@@ -84,7 +98,7 @@ public class Drive extends Subsystem{
 
     frontLeft.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference, 1, 30);
 
-    frontLeft.configSelectedFeedbackCoefficient(/*Constants.driveTurnUnitsPerRotation / Constants.driveEncoderUnitsPerRotation*/1  /*scale to 1/10 of a degree per unit*/, 1, 30);
+    frontLeft.configSelectedFeedbackCoefficient(Constants.driveTurnUnitsPerRotation / Constants.driveEncoderUnitsPerRotation,  scale to 1/10 of a degree per unit, 30);
 
     frontLeft.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20, 30);
 		frontLeft.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1, 20, 30);
@@ -101,23 +115,66 @@ public class Drive extends Subsystem{
 
 
     frontLeft.setSelectedSensorPosition(0);
-    frontRight.setSelectedSensorPosition(0);
+    frontRight.setSelectedSensorPosition(0);*/
   }
 
-  public void driveInchesToHeading(double inches, double desiredHeadingDegrees){
-    frontRight.set(ControlMode.MotionMagic, inches, DemandType.AuxPID, desiredHeadingDegrees);
-    frontLeft.follow(frontRight, FollowerType.AuxOutput1); 
+  public void driveDistanceToHeading(double throttleError, double turnError){
+    //frontRight.set(ControlMode.MotionMagic, inches, DemandType.AuxPID, desiredHeadingDegrees);
+    //frontLeft.follow(frontRight, FollowerType.AuxOutput1); 
+
+    turnDT = (System.currentTimeMillis() - turnPreviousTime)/1000;
+    turnI += turnError/turnDT;
+    turnD = -(turnError - turnPreviousError)/turnDT;
+    turnPreviousError = turnError;
+
+    throttleDT = (System.currentTimeMillis() - throttlePreviousTime)/1000;
+    throttleI += throttleError/throttleDT;
+    throttleD = -(throttleError - throttlePreviousError)/throttleDT;
+    throttlePreviousError = throttleError;
+
+    drive.arcadeDrive(Constants.driveThrottleKP*throttleError + Constants.driveTurnKI*throttleI + Constants.driveThrottleKD*throttleD, Constants.driveTurnKP*turnError + Constants.driveTurnKI*turnI + Constants.driveTurnKD*turnD);
   }
 
-  public void driveToHeading(double desiredHeadingDegrees){
-    frontLeft.set(ControlMode.PercentOutput, -Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY()), DemandType.AuxPID, desiredHeadingDegrees);
-    frontRight.set(ControlMode.PercentOutput, -Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY()), DemandType.AuxPID, desiredHeadingDegrees);
+  public void driveToHeading(double turnError){
+    //frontLeft.set(ControlMode.PercentOutput, -Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY()), DemandType.AuxPID, desiredHeadingDegrees);
+    //frontRight.set(ControlMode.PercentOutput, -Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY()), DemandType.AuxPID, desiredHeadingDegrees);
     //frontRight.set(ControlMode.Position, desiredHeadingDegrees);
+
+    turnDT = (System.currentTimeMillis() - turnPreviousTime)/1000;
+    turnI += turnError/turnDT;
+    turnD = -(turnError - turnPreviousError)/turnDT;
+    turnPreviousError = turnError;
+
+    drive.arcadeDrive(OI.throttleOutput(), Constants.driveTurnKP*turnError + Constants.driveTurnKI*turnI + Constants.driveTurnKD*turnD);
   }
 
   public void turnDegrees(double degrees){
-    frontRight.set(ControlMode.PercentOutput, 0, DemandType.AuxPID, degrees * 10);
-    frontLeft.follow(frontRight, FollowerType.AuxOutput1);
+    //frontRight.set(ControlMode.PercentOutput, 0, DemandType.AuxPID, degrees * 10);
+    //frontLeft.follow(frontRight, FollowerType.AuxOutput1);
+
+    /*dt = (System.currentTimeMillis() - previousTime)/1000;
+    i += error/dt;
+    d = -(error - previousError)/dt;
+    arcadeUpdate((leftSpeed + rightSpeed)/2, kp*error + ki*i + kd*d);
+    previousError = error;*/
+
+  }
+
+  public static void resetPIDs(){
+    resetTurnPID();
+    resetThrottlePID();
+  }
+
+  public static void resetTurnPID(){
+    turnPreviousError = 0;
+    turnI = 0;
+    turnD = 0;
+  }
+
+  public static void resetThrottlePID(){
+    throttlePreviousError = 0;
+    throttleI = 0;
+    throttleD = 0;
   }
 
   public void arcadeDrive(double throttle, double turn){

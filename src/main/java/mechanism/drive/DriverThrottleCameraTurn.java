@@ -7,10 +7,16 @@
 
 package mechanism.drive;
 
+import org.usfirst.frc.team1452.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriverThrottleCameraTurn extends Command {
+  Drive drive;
+
   public DriverThrottleCameraTurn() {
+    requires(Robot.drive);
+    this.drive = Robot.drive;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -18,6 +24,7 @@ public class DriverThrottleCameraTurn extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    drive.resetPIDs();
   }
 
   // Called repeatedly when this Command is scheduled to run

@@ -28,16 +28,7 @@ public class DriverControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double forward = -1.0 * Robot.throttleJ.getY() * Math.abs(Robot.throttleJ.getY());  // Sign this so forward is positive
-    double turn = 1.0 * Robot.turnJ.getX(); 
-    
-    if (Math.abs(forward) < 0.025) {
-      forward = 0;
-    }
-    if (Math.abs(turn) < 0.025) {
-      turn = 0;
-    }
-    drive.curvatureDrive(forward, turn, OI.quickTurnButton.get());
+    drive.curvatureDrive(OI.throttleOutput(), OI.turnOutput(), OI.quickTurnButton.get());
   }
 
   // Make this return true when this Command no longer needs to run execute()

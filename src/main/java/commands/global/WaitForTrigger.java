@@ -12,15 +12,9 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class WaitForTrigger extends Command {
   JoystickButton b;
-  public static boolean intakingBallLow = false;
 	
   public WaitForTrigger(JoystickButton b) {
 	  this.b = b;
-  }
-
-  public WaitForTrigger(JoystickButton b, boolean intakingBallLow) {
-    this.b = b;
-    this.intakingBallLow = intakingBallLow;
   }
 
   // Called just before this Command runs the first time
@@ -42,13 +36,11 @@ public class WaitForTrigger extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    intakingBallLow = false;
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    intakingBallLow = false;
   }
 }
